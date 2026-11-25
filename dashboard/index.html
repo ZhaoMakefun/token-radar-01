@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — protocols still waiting for a token</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">TOKEN RADAR · DEFI LLAMA SNAPSHOT <span id="asof"></span></p>
+    <h1>Protocols still waiting for a token</h1>
+    <p class="lede">Every protocol DefiLlama tracks, ranked by what its token would be worth if it launched
+    one today. The board covers the whole watchlist and the early protocols below it — 200 rows, one
+    farm plan each. A protocol is listed as pre-token when its record carries no token, never as
+    proof that it has none.</p>
+    <p class="stats" id="stats"></p>
+    <nav class="tabs" id="tabs">
+      <a href="#/" data-tab="board">Board</a>
+      <a href="#/model" data-tab="model">How the value is worked out</a>
+      <a href="#/live" data-tab="live">Live tokens</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  <section id="view-board">
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search a protocol…" aria-label="Search a protocol">
+      <select id="cat" aria-label="Filter by category"><option value="">All categories</option></select>
+      <select id="chain" aria-label="Filter by chain"><option value="">All chains</option></select>
+      <select id="sort" aria-label="Sort the board">
+        <option value="rank">Sort: rank</option>
+        <option value="value">Sort: implied value</option>
+        <option value="tvl">Sort: TVL</option>
+        <option value="growth">Sort: 7-day change</option>
+        <option value="age">Sort: oldest first</option>
+      </select>
+      <label class="check"><input id="watch" type="checkbox"> Watchlist only</label>
+    </div>
+    <p class="count" id="count"></p>
+    <table class="board">
+      <thead><tr>
+        <th class="num">#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+        <th class="num">TVL</th><th class="num">7d</th><th class="num">Implied value</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+  <section id="view-detail" hidden>
+    <p><a href="#/" class="back">← Back to the board</a></p>
+    <div id="detail"></div>
+  </section>
+  <section id="view-model" hidden>
+    <h2>How the value is worked out</h2>
+    <p>Implied value is the entry's own claim, never make.fun's, and it is not a prediction that a
+    token will be issued or when. It is worked out from the snapshot's own figures alone:</p>
+    <p class="formula">implied value = TVL × category multiple × growth × maturity × breadth</p>
+    <ul class="model-list">
+      <li><strong>Category multiple.</strong> For each category, the median market cap per dollar of
+      TVL among the protocols whose token already trades — the market's own pricing, read out of
+      this snapshot. Each live protocol's ratio is capped at 5× before the median, and a category
+      with fewer than ten live protocols is pulled toward the market median, so one outlier never
+      prices a whole category. A category with no live protocol takes the market median.</li>
+      <li><strong>Growth.</strong> The protocol's seven-day TVL change, clamped to −60%…+120%, moves
+      the value by 0.6× the change: a protocol growing 10% in a week is worth 6% more than its
+      TVL alone says.</li>
+      <li><strong>Maturity.</strong> How long the protocol has run with no token: 0.60 for a brand-new
+      listing, rising to 1.00 after three years. A protocol that held users for years without
+      issuing a token has more pent-up launch value than one listed last month.</li>
+      <li><strong>Breadth.</strong> 1.00 on one chain, +0.03 per extra chain, up to 1.12: a protocol
+      live on several chains reaches more farmers than a single-chain one.</li>
+    </ul>
+    <p>No protocol name is ever special-cased: the same function scores every row. Exchanges and
+    versioned pools are not ranked, and neither are wrapped, staked or bridged products of a token
+    that already trades — a wrapped token is not a launch waiting to happen.</p>
+    <h3>Category multiples</h3>
+    <table class="board narrow">
+      <thead><tr><th>Category</th><th class="num">Multiple</th><th class="num">Live protocols priced</th></tr></thead>
+      <tbody id="multiples"></tbody>
+    </table>
+    <p class="muted">Market median across all live protocols: <span id="globalmult"></span>× TVL.</p>
+  </section>
+  <section id="view-live" hidden>
+    <h2>Live tokens — the market's own pricing</h2>
+    <p>The 24 largest protocols whose token already trades, by market cap. These are the comparables
+    the model reads its category multiples from. They are set aside from the board: a token that
+    trades has a market price, not an implied one.</p>
+    <table class="board">
+      <thead><tr><th>Protocol</th><th>Category</th><th class="num">TVL</th><th class="num">Market cap</th><th class="num">MCap / TVL</th></tr></thead>
+      <tbody id="live"></tbody>
+    </table>
+  </section>
+</main>
+<footer class="wrap muted">
+  <p>Source: DefiLlama public API, fetched 2026-11-14. Snapshot as of <span id="asof2"></span>.
+  Board of <span id="boardsize"></span> rows: the 40-protocol watchlist plus 160 early protocols below
+  the $50,000,000 floor, chosen by implied value. Farm plans are guidance, not financial advice.</p>
+</footer>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
